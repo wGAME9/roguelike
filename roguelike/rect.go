@@ -5,7 +5,7 @@ type rect struct {
 	X2, Y2 int
 }
 
-func newRect(x, y, width, height int) rect {
+func newRectangle(x, y, width, height int) rect {
 	return rect{
 		X1: x,
 		Y1: y,

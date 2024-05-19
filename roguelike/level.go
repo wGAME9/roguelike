@@ -37,19 +37,19 @@ func (l *level) GenerateLevelTiles() {
 	for i := 0; i < MAX_ROOMS; i++ {
 		w := getRandomIntBetween(MIN_SIZE, MAX_SIZE)
 		h := getRandomIntBetween(MIN_SIZE, MAX_SIZE)
-		x := getRandomInt(numTilesX-w-1) - 1
-		y := getRandomInt(numTilesY-h-1) - 1
+		x := getDiceRoll(numTilesX - w - 1)
+		y := getDiceRoll(numTilesY - h - 1)
 
-		newRoom := newRect(x, y, w, h)
-		canAdd := true
+		newRoom := newRectangle(x, y, w, h)
+		canAddThisRoom := true
 		for _, otherRoom := range l.Rooms {
 			if newRoom.intersect(otherRoom) {
-				canAdd = false
+				canAddThisRoom = false
 				break
 			}
 		}
 
-		if canAdd {
+		if canAddThisRoom {
 			l.createRooms(newRoom)
 			l.Rooms = append(l.Rooms, newRoom)
 		}
