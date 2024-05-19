@@ -14,14 +14,14 @@ func newRectangle(x, y, width, height int) rect {
 	}
 }
 
-func (r *rect) center() (int, int) {
+func (r *rect) Center() (int, int) {
 	centerX := (r.X1 + r.X2) / 2
 	centerY := (r.Y1 + r.Y2) / 2
 
 	return centerX, centerY
 }
 
-func (r *rect) intersect(other rect) bool {
+func (r *rect) Intersect(other rect) bool {
 	return r.X1 <= other.X2 && r.X2 >= other.X1 &&
 		r.Y1 <= other.Y1 && r.Y2 >= other.Y1
 }

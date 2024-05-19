@@ -16,7 +16,7 @@ var (
 
 func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 	startingRoom := startingLevel.Rooms[0]
-	x, y := startingRoom.center()
+	x, y := startingRoom.Center()
 
 	tags := make(map[string]ecs.Tag)
 	manager := ecs.NewManager()

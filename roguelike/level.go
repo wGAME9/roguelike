@@ -1,6 +1,8 @@
 package roguelike
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type level struct {
 	Tiles []tile
@@ -32,7 +34,9 @@ func (l *level) GenerateLevelTiles() {
 	MAX_SIZE := 10
 	MAX_ROOMS := 30
 
-	l.createTiles()
+	if len(l.Tiles) == 0 {
+		l.createTiles()
+	}
 
 	for i := 0; i < MAX_ROOMS; i++ {
 		w := getRandomIntBetween(MIN_SIZE, MAX_SIZE)
@@ -43,7 +47,7 @@ func (l *level) GenerateLevelTiles() {
 		newRoom := newRectangle(x, y, w, h)
 		canAddThisRoom := true
 		for _, otherRoom := range l.Rooms {
-			if newRoom.intersect(otherRoom) {
+			if newRoom.Intersect(otherRoom) {
 				canAddThisRoom = false
 				break
 			}
@@ -51,6 +55,22 @@ func (l *level) GenerateLevelTiles() {
 
 		if canAddThisRoom {
 			l.createRooms(newRoom)
+			hasPreviousRoom := len(l.Rooms) > 0
+			if hasPreviousRoom {
+				newX, newY := newRoom.Center()
+				lastRoom := l.Rooms[len(l.Rooms)-1]
+				prevX, prevY := lastRoom.Center()
+
+				coinFlip := getDiceRoll(2)
+				if coinFlip == 2 {
+					l.createHorizontalTunnel(prevX, newX, prevY)
+					l.createVerticalTunnel(prevY, newY, newX)
+				} else {
+					l.createHorizontalTunnel(prevX, newX, newY)
+					l.createVerticalTunnel(prevY, newY, prevX)
+				}
+			}
+
 			l.Rooms = append(l.Rooms, newRoom)
 		}
 	}
@@ -78,6 +98,30 @@ func (l *level) createRooms(room rect) {
 	for y := room.Y1 + 1; y < room.Y2; y++ {
 		for x := room.X1 + 1; x < room.X2; x++ {
 			index := l.getIndexFromCoords(x, y)
+			l.Tiles[index].Blocked = false
+			l.Tiles[index].Image = floorImage
+		}
+	}
+}
+
+func (l *level) createHorizontalTunnel(x1, x2, y int) {
+	minX := min(x1, x2)
+	maxX := max(x1, x2)
+	for x := minX; x < maxX+1; x++ {
+		index := l.getIndexFromCoords(x, y)
+		if index > 0 && index < numTilesX*numTilesY {
+			l.Tiles[index].Blocked = false
+			l.Tiles[index].Image = floorImage
+		}
+	}
+}
+
+func (l *level) createVerticalTunnel(y1, y2, x int) {
+	minY := min(y1, y2)
+	maxY := max(y1, y2)
+	for y := minY; y < maxY+1; y++ {
+		index := l.getIndexFromCoords(x, y)
+		if index > 0 && index < numTilesX*numTilesY {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].Image = floorImage
 		}
