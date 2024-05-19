@@ -2,6 +2,16 @@ package roguelike
 
 import "math/rand/v2"
 
+func getRandomIntBetween(min, max int) int {
+	var randy int = -1
+	for {
+		randy = getDiceRoll(max)
+		if randy >= min {
+			return randy
+		}
+	}
+}
+
 // getRandomInt returns an integer from 0 to the number - 1
 func getRandomInt(num int) int {
 	return rand.IntN(num)

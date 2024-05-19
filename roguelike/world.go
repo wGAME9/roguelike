@@ -14,7 +14,10 @@ var (
 	renderableComponent *ecs.Component
 )
 
-func initializeWorld() (*ecs.Manager, map[string]ecs.Tag) {
+func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
+	startingRoom := startingLevel.Rooms[0]
+	x, y := startingRoom.center()
+
 	tags := make(map[string]ecs.Tag)
 	manager := ecs.NewManager()
 
@@ -30,7 +33,7 @@ func initializeWorld() (*ecs.Manager, map[string]ecs.Tag) {
 		AddComponent(renderableComponent, &renderable{
 			Image: playerImage,
 		}).
-		AddComponent(positionComponent, &position{X: 40, Y: 25})
+		AddComponent(positionComponent, &position{X: x, Y: y})
 
 	players := ecs.BuildTag(playerComponent, positionComponent)
 	tags[playersTag] = players

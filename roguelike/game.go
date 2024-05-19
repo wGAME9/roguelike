@@ -12,10 +12,11 @@ type game struct {
 }
 
 func NewGame() *game {
-	world, tags := initializeWorld()
+	gameMap := newGameMap()
+	world, tags := initializeWorld(gameMap.CurrentLevel)
 
 	return &game{
-		GameMap:   newGameMap(),
+		GameMap:   gameMap,
 		World:     world,
 		WorldTags: tags,
 	}
