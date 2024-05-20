@@ -6,4 +6,6 @@ type tile struct {
 	X, Y    int
 	Blocked bool
 	Image   *ebiten.Image
+
+	IsRevealed bool
 }

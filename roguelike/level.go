@@ -2,6 +2,7 @@ package roguelike
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/colorm"
 	"github.com/norendren/go-fov/fov"
 )
 
@@ -25,14 +26,22 @@ func (l *level) Draw(screen *ebiten.Image) {
 	for x := range numTilesX {
 		for y := range numTilesY {
 			isVisible := l.PlayerVisible.IsVisible(x, y)
-			if !isVisible {
+			tileIdx := l.getIndexFromCoords(x, y)
+			tile := l.Tiles[tileIdx]
+			if !isVisible && !tile.IsRevealed {
 				continue
 			}
 
-			tile := l.Tiles[l.getIndexFromCoords(x, y)]
-			op := &ebiten.DrawImageOptions{}
+			var clrM colorm.ColorM
+			op := &colorm.DrawImageOptions{}
 			op.GeoM.Translate(float64(tile.X), float64(tile.Y))
-			screen.DrawImage(tile.Image, op)
+			if !isVisible && tile.IsRevealed {
+				// it's not current visible, but it's been seen before
+				clrM.Scale(0.5, 0.5, 0.5, 1)
+			}
+			colorm.DrawImage(screen, tile.Image, clrM, op)
+
+			l.Tiles[tileIdx].IsRevealed = true
 		}
 	}
 }
@@ -91,10 +100,11 @@ func (l *level) createTiles() {
 		for yIdx := range numTilesY {
 			placeIndx := l.getIndexFromCoords(xIdx, yIdx)
 			tiles[placeIndx] = tile{
-				X:       xIdx * tileWidth,
-				Y:       yIdx * tileHeight,
-				Blocked: true,
-				Image:   wallImage,
+				X:          xIdx * tileWidth,
+				Y:          yIdx * tileHeight,
+				Blocked:    true,
+				Image:      wallImage,
+				IsRevealed: false,
 			}
 		}
 	}
