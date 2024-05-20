@@ -2,16 +2,19 @@ package roguelike
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/norendren/go-fov/fov"
 )
 
 type level struct {
-	Tiles []tile
-	Rooms []rect
+	Tiles         []tile
+	Rooms         []rect
+	PlayerVisible *fov.View
 }
 
 func newLevel() level {
 	l := level{
-		Rooms: make([]rect, 0),
+		Rooms:         make([]rect, 0),
+		PlayerVisible: fov.New(),
 	}
 	l.GenerateLevelTiles()
 
@@ -21,6 +24,11 @@ func newLevel() level {
 func (l *level) Draw(screen *ebiten.Image) {
 	for x := range numTilesX {
 		for y := range numTilesY {
+			isVisible := l.PlayerVisible.IsVisible(x, y)
+			if !isVisible {
+				continue
+			}
+
 			tile := l.Tiles[l.getIndexFromCoords(x, y)]
 			op := &ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64(tile.X), float64(tile.Y))
@@ -126,6 +134,18 @@ func (l *level) createVerticalTunnel(y1, y2, x int) {
 			l.Tiles[index].Image = floorImage
 		}
 	}
+}
+
+func (l level) InBounds(x, y int) bool {
+	xIsInBound := 0 < x && x < numTilesX
+	yIsInBound := 0 < y && y < numTilesY
+
+	return xIsInBound && yIsInBound
+}
+
+func (l level) IsOpaque(x, y int) bool {
+	idx := l.getIndexFromCoords(x, y)
+	return l.Tiles[idx].Blocked
 }
 
 func (l *level) getIndexFromCoords(x, y int) int {

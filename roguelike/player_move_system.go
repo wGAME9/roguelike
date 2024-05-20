@@ -35,6 +35,7 @@ func tryMovePlayer(game *game) {
 
 		pos.X += dx
 		pos.Y += dy
+		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 	}
 
 	if dx != 0 || dy != 0 {
