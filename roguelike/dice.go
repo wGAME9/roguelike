@@ -3,13 +3,7 @@ package roguelike
 import "math/rand/v2"
 
 func getRandomIntBetween(min, max int) int {
-	var randy int = -1
-	for {
-		randy = getDiceRoll(max)
-		if randy >= min {
-			return randy
-		}
-	}
+	return getDiceRoll(max-min) + min
 }
 
 // getRandomInt returns an integer from 0 to the number - 1
