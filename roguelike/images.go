@@ -11,6 +11,7 @@ var (
 	wallImage   *ebiten.Image
 	floorImage  *ebiten.Image
 	playerImage *ebiten.Image
+	skellyImage *ebiten.Image
 )
 
 func init() {
@@ -26,6 +27,11 @@ func init() {
 	}
 
 	playerImage, _, err = ebitenutil.NewImageFromFile("assets/player.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	skellyImage, _, err = ebitenutil.NewImageFromFile("assets/skelly.png")
 	if err != nil {
 		log.Fatal(err)
 	}

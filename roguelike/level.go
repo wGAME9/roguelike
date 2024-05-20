@@ -105,6 +105,7 @@ func (l *level) createTiles() {
 				Blocked:    true,
 				Image:      wallImage,
 				IsRevealed: false,
+				TypeOfTile: WALL,
 			}
 		}
 	}
@@ -117,6 +118,7 @@ func (l *level) createRooms(room rect) {
 		for x := room.X1 + 1; x < room.X2; x++ {
 			index := l.getIndexFromCoords(x, y)
 			l.Tiles[index].Blocked = false
+			l.Tiles[index].TypeOfTile = FLOOR
 			l.Tiles[index].Image = floorImage
 		}
 	}
@@ -129,6 +131,7 @@ func (l *level) createHorizontalTunnel(x1, x2, y int) {
 		index := l.getIndexFromCoords(x, y)
 		if index > 0 && index < numTilesX*numTilesY {
 			l.Tiles[index].Blocked = false
+			l.Tiles[index].TypeOfTile = FLOOR
 			l.Tiles[index].Image = floorImage
 		}
 	}
@@ -141,6 +144,7 @@ func (l *level) createVerticalTunnel(y1, y2, x int) {
 		index := l.getIndexFromCoords(x, y)
 		if index > 0 && index < numTilesX*numTilesY {
 			l.Tiles[index].Blocked = false
+			l.Tiles[index].TypeOfTile = FLOOR
 			l.Tiles[index].Image = floorImage
 		}
 	}
@@ -155,7 +159,7 @@ func (l level) InBounds(x, y int) bool {
 
 func (l level) IsOpaque(x, y int) bool {
 	idx := l.getIndexFromCoords(x, y)
-	return l.Tiles[idx].Blocked
+	return l.Tiles[idx].TypeOfTile == WALL
 }
 
 func (l *level) getIndexFromCoords(x, y int) int {
