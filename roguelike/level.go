@@ -7,7 +7,7 @@ import (
 )
 
 type level struct {
-	Tiles         []tile
+	Tiles         []*tile
 	Rooms         []rect
 	PlayerVisible *fov.View
 }
@@ -94,12 +94,12 @@ func (l *level) GenerateLevelTiles() {
 }
 
 func (l *level) createTiles() {
-	tiles := make([]tile, numTilesX*numTilesY)
+	tiles := make([]*tile, numTilesX*numTilesY)
 
 	for xIdx := range numTilesX {
 		for yIdx := range numTilesY {
 			placeIndx := l.getIndexFromCoords(xIdx, yIdx)
-			tiles[placeIndx] = tile{
+			tiles[placeIndx] = &tile{
 				X:          xIdx * tileWidth,
 				Y:          yIdx * tileHeight,
 				Blocked:    true,

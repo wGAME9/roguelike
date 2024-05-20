@@ -3,6 +3,12 @@ package roguelike
 import "github.com/hajimehoshi/ebiten/v2"
 
 func tryMovePlayer(game *game) {
+	turnTaken := false
+
+	if ebiten.IsKeyPressed(ebiten.KeyQ) {
+		turnTaken = true
+	}
+
 	dx, dy := 0, 0
 
 	if ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
@@ -33,12 +39,15 @@ func tryMovePlayer(game *game) {
 			return
 		}
 
+		level.Tiles[level.getIndexFromCoords(pos.X, pos.Y)].Blocked = false
+
 		pos.X += dx
 		pos.Y += dy
+		level.Tiles[index].Blocked = true
 		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 	}
 
-	if dx != 0 || dy != 0 {
+	if dx != 0 || dy != 0 || turnTaken {
 		game.Turn = getNextState(game.Turn)
 		game.TurnCounter = 0
 	}

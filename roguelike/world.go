@@ -7,9 +7,11 @@ import (
 const (
 	playersTag     = "players"
 	renderablesTag = "renderables"
+	monsterTag     = "monsters"
 )
 
 var (
+	monsterComponent    *ecs.Component
 	positionComponent   *ecs.Component
 	renderableComponent *ecs.Component
 )
@@ -22,7 +24,7 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 	manager := ecs.NewManager()
 
 	playerComponent := manager.NewComponent()
-	monsterComponent := manager.NewComponent()
+	monsterComponent = manager.NewComponent()
 
 	moveableComponent := manager.NewComponent()
 	positionComponent = manager.NewComponent()
@@ -47,7 +49,9 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 			mX, mY := room.Center()
 
 			manager.NewEntity().
-				AddComponent(monsterComponent, monster{}).
+				AddComponent(monsterComponent, &monster{
+					Name: "Skelton",
+				}).
 				AddComponent(renderableComponent, &renderable{
 					Image: skellyImage,
 				}).
@@ -57,6 +61,9 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 				})
 		}
 	}
+
+	monsters := ecs.BuildTag(monsterComponent, positionComponent)
+	tags["monsters"] = monsters
 
 	return manager, tags
 }
