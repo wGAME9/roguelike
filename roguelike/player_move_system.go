@@ -1,6 +1,8 @@
 package roguelike
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 func tryMovePlayer(game *game) {
 	turnTaken := false
@@ -30,19 +32,21 @@ func tryMovePlayer(game *game) {
 	level := game.GameMap.CurrentLevel
 
 	player := game.WorldTags[playersTag]
+
 	for _, result := range game.World.Query(player) {
 		pos := result.Components[positionComponent].(*position)
 		index := level.getIndexFromCoords(pos.X+dx, pos.Y+dy)
 
 		tile := level.Tiles[index]
 		if tile.Blocked {
-			return
+			break
 		}
 
 		level.Tiles[level.getIndexFromCoords(pos.X, pos.Y)].Blocked = false
 
 		pos.X += dx
 		pos.Y += dy
+		// making monster is blocked from moving to where player is standing
 		level.Tiles[index].Blocked = true
 		level.PlayerVisible.Compute(level, pos.X, pos.Y, 8)
 	}
