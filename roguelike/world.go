@@ -57,15 +57,15 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 			CurrentHealth: 30,
 		}).
 		AddComponent(meleeWeaponComponent, &meleeWeapon{
-			Name:          "Fist",
-			MinimumDamage: 1,
-			MaximumDamage: 3,
-			ToHitBonus:    2,
+			Name:          "Battle Axe",
+			MinimumDamage: 10,
+			MaximumDamage: 20,
+			ToHitBonus:    3,
 		}).
 		AddComponent(armorComponent, &armor{
-			Name:       "Burlap Sack",
-			Defense:    1,
-			ArmorClass: 1,
+			Name:       "Plate Armor",
+			Defense:    15,
+			ArmorClass: 18,
 		}).
 		AddComponent(nameComponent, &name{
 			Label: "Player",
