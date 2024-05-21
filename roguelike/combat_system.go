@@ -62,10 +62,7 @@ func attackSystem(g *game, attackerPosition *position, defenderPosition *positio
 			damageDone = 0
 		}
 		defenderHealth.CurrentHealth -= damageDone
-		fmt.Printf(
-			"%s swings %s at %s and hits for %d health.\n",
-			attackerName, attackerWeapon.Name, defenderName, damageDone,
-		)
+
 		attackerMessage.AttackMessage = fmt.Sprintf(
 			"%s swings %s at %s and hits for %d health.\n",
 			attackerName, attackerWeapon.Name, defenderName, damageDone,
