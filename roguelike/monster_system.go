@@ -23,6 +23,12 @@ func updateMonster(game *game) {
 		if monsterCanSeesPlayer {
 			if pos.GetManhattanDistance(&playerPosition) == 1 {
 				attackSystem(game, pos, &playerPosition)
+				if result.Components[healthComponent].(*health).CurrentHealth <= 0 {
+					//this monster is dead
+					//clear the tile
+					t := l.Tiles[l.getIndexFromCoords(pos.X, pos.Y)]
+					t.Blocked = false
+				}
 				continue
 			}
 

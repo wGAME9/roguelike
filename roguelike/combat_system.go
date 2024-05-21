@@ -49,6 +49,10 @@ func attackSystem(g *game, attackerPosition *position, defenderPosition *positio
 	defenderMessage := defender.Components[messageComponent].(*message)
 	defenderName := defender.Components[nameComponent].(*name).Label
 
+	//if the attacker is dead, don't let them attackerWeapon
+	if attacker.Components[healthComponent].(*health).CurrentHealth <= 0 {
+		return
+	}
 	//Roll a d10 to hit
 	toHitRoll := getDiceRoll(10)
 
@@ -74,7 +78,6 @@ func attackSystem(g *game, attackerPosition *position, defenderPosition *positio
 				defenderMessage.GameStateMessage = "Game Over!\n"
 				g.Turn = gameOver
 			}
-			g.World.DisposeEntity(defender.Entity)
 		}
 	} else {
 		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and misses.\n", attackerName, attackerWeapon.Name, defenderName)
