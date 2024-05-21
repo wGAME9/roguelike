@@ -18,7 +18,14 @@ func updateMonster(game *game) {
 		pos := result.Components[positionComponent].(*position)
 		monsterSees := fov.New()
 		monsterSees.Compute(l, pos.X, pos.Y, 8)
-		if monsterSees.IsVisible(playerPosition.X, playerPosition.Y) {
+
+		monsterCanSeesPlayer := monsterSees.IsVisible(playerPosition.X, playerPosition.Y)
+		if monsterCanSeesPlayer {
+			if pos.GetManhattanDistance(&playerPosition) == 1 {
+				attackSystem(game, pos, &playerPosition)
+				continue
+			}
+
 			astar := AStar{}
 			path := astar.GetPath(l, pos, &playerPosition)
 			if len(path) > 1 {

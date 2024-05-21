@@ -6,6 +6,7 @@ const (
 	beforePlayerAction turnState = iota
 	playerTurn
 	monsterTurn
+	gameOver
 )
 
 func getNextState(state turnState) turnState {
@@ -18,6 +19,9 @@ func getNextState(state turnState) turnState {
 
 	case monsterTurn:
 		return beforePlayerAction
+
+	case gameOver:
+		return gameOver
 
 	default:
 		return playerTurn

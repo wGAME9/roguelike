@@ -39,6 +39,13 @@ func tryMovePlayer(game *game) {
 
 		tile := level.Tiles[index]
 		if tile.Blocked {
+			if dx != 0 || dy != 0 {
+				if level.Tiles[index].TypeOfTile != WALL {
+					//Its a tile with a monster -- Fight it
+					monsterPosition := position{X: pos.X + dx, Y: pos.Y + dy}
+					attackSystem(game, pos, &monsterPosition)
+				}
+			}
 			break
 		}
 

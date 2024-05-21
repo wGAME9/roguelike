@@ -14,6 +14,11 @@ var (
 	monsterComponent    *ecs.Component
 	positionComponent   *ecs.Component
 	renderableComponent *ecs.Component
+
+	healthComponent      *ecs.Component
+	meleeWeaponComponent *ecs.Component
+	armorComponent       *ecs.Component
+	nameComponent        *ecs.Component
 )
 
 func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
@@ -30,15 +35,45 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 	positionComponent = manager.NewComponent()
 	renderableComponent = manager.NewComponent()
 
+	healthComponent = manager.NewComponent()
+	meleeWeaponComponent = manager.NewComponent()
+	armorComponent = manager.NewComponent()
+	nameComponent = manager.NewComponent()
+
 	manager.NewEntity().
 		AddComponent(playerComponent, player{}).
 		AddComponent(moveableComponent, moveable{}).
 		AddComponent(renderableComponent, &renderable{
 			Image: playerImage,
 		}).
-		AddComponent(positionComponent, &position{X: x, Y: y})
+		AddComponent(positionComponent, &position{X: x, Y: y}).
+		AddComponent(healthComponent, &health{
+			MaxHealth:     30,
+			CurrentHealth: 30,
+		}).
+		AddComponent(meleeWeaponComponent, &meleeWeapon{
+			Name:          "Fist",
+			MinimumDamage: 1,
+			MaximumDamage: 3,
+			ToHitBonus:    2,
+		}).
+		AddComponent(armorComponent, &armor{
+			Name:       "Burlap Sack",
+			Defense:    1,
+			ArmorClass: 1,
+		}).
+		AddComponent(nameComponent, &name{
+			Label: "Player",
+		})
 
-	players := ecs.BuildTag(playerComponent, positionComponent)
+	players := ecs.BuildTag(
+		playerComponent,
+		positionComponent,
+		healthComponent,
+		meleeWeaponComponent,
+		armorComponent,
+		nameComponent,
+	)
 	tags[playersTag] = players
 
 	renderables := ecs.BuildTag(renderableComponent, positionComponent)
@@ -49,20 +84,43 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 			mX, mY := room.Center()
 
 			manager.NewEntity().
-				AddComponent(monsterComponent, &monster{
-					Name: "Skelton",
-				}).
+				AddComponent(monsterComponent, &monster{}).
 				AddComponent(renderableComponent, &renderable{
 					Image: skellyImage,
 				}).
 				AddComponent(positionComponent, &position{
 					X: mX,
 					Y: mY,
+				}).
+				AddComponent(healthComponent, &health{
+					MaxHealth:     10,
+					CurrentHealth: 10,
+				}).
+				AddComponent(meleeWeaponComponent, &meleeWeapon{
+					Name:          "Short Sword",
+					MinimumDamage: 2,
+					MaximumDamage: 6,
+					ToHitBonus:    0,
+				}).
+				AddComponent(armorComponent, &armor{
+					Name:       "Bone",
+					Defense:    3,
+					ArmorClass: 4,
+				}).
+				AddComponent(nameComponent, &name{
+					Label: "Skeleton",
 				})
 		}
 	}
 
-	monsters := ecs.BuildTag(monsterComponent, positionComponent)
+	monsters := ecs.BuildTag(
+		monsterComponent,
+		positionComponent,
+		healthComponent,
+		meleeWeaponComponent,
+		armorComponent,
+		nameComponent,
+	)
 	tags["monsters"] = monsters
 
 	return manager, tags
