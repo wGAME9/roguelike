@@ -44,6 +44,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 	level.Draw(screen)
 
 	processRenderables(g, level, screen)
+	processUserLog(g, screen)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {

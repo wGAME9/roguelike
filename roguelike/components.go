@@ -53,3 +53,9 @@ type armor struct {
 	Defense    int
 	ArmorClass int
 }
+
+type message struct {
+	AttackMessage    string
+	DeadMessage      string
+	GameStateMessage string
+}

@@ -15,6 +15,5 @@ func processRenderables(game *game, level level, screen *ebiten.Image) {
 			op.GeoM.Translate(float64(tile.X), float64(tile.Y))
 			screen.DrawImage(img, op)
 		}
-
 	}
 }

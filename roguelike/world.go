@@ -8,6 +8,7 @@ const (
 	playersTag     = "players"
 	renderablesTag = "renderables"
 	monsterTag     = "monsters"
+	messageTag     = "messages"
 )
 
 var (
@@ -19,6 +20,8 @@ var (
 	meleeWeaponComponent *ecs.Component
 	armorComponent       *ecs.Component
 	nameComponent        *ecs.Component
+
+	messageComponent *ecs.Component
 )
 
 func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
@@ -39,6 +42,8 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 	meleeWeaponComponent = manager.NewComponent()
 	armorComponent = manager.NewComponent()
 	nameComponent = manager.NewComponent()
+
+	messageComponent = manager.NewComponent()
 
 	manager.NewEntity().
 		AddComponent(playerComponent, player{}).
@@ -64,17 +69,12 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 		}).
 		AddComponent(nameComponent, &name{
 			Label: "Player",
+		}).
+		AddComponent(messageComponent, &message{
+			AttackMessage:    "",
+			DeadMessage:      "",
+			GameStateMessage: "",
 		})
-
-	players := ecs.BuildTag(
-		playerComponent,
-		positionComponent,
-		healthComponent,
-		meleeWeaponComponent,
-		armorComponent,
-		nameComponent,
-	)
-	tags[playersTag] = players
 
 	renderables := ecs.BuildTag(renderableComponent, positionComponent)
 	tags[renderablesTag] = renderables
@@ -109,9 +109,25 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 				}).
 				AddComponent(nameComponent, &name{
 					Label: "Skeleton",
+				}).
+				AddComponent(messageComponent, &message{
+					AttackMessage:    "",
+					DeadMessage:      "",
+					GameStateMessage: "",
 				})
 		}
 	}
+
+	players := ecs.BuildTag(
+		playerComponent,
+		positionComponent,
+		healthComponent,
+		meleeWeaponComponent,
+		armorComponent,
+		nameComponent,
+		messageComponent,
+	)
+	tags[playersTag] = players
 
 	monsters := ecs.BuildTag(
 		monsterComponent,
@@ -120,8 +136,12 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 		meleeWeaponComponent,
 		armorComponent,
 		nameComponent,
+		messageComponent,
 	)
-	tags["monsters"] = monsters
+	tags[monsterTag] = monsters
+
+	messengers := ecs.BuildTag(messageComponent)
+	tags[messageTag] = messengers
 
 	return manager, tags
 }

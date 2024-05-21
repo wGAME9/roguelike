@@ -16,13 +16,9 @@ func attackSystem(g *game, attackerPosition *position, defenderPosition *positio
 		if pos.IsEqual(attackerPosition) {
 			//This is the attacker
 			attacker = player
-			break
-		}
-
-		if pos.IsEqual(defenderPosition) {
+		} else if pos.IsEqual(defenderPosition) {
 			//This is the defender
 			defender = player
-			break
 		}
 	}
 
@@ -46,9 +42,11 @@ func attackSystem(g *game, attackerPosition *position, defenderPosition *positio
 	//Grab the required information
 	attackerWeapon := attacker.Components[meleeWeaponComponent].(*meleeWeapon)
 	attackerName := attacker.Components[nameComponent].(*name).Label
+	attackerMessage := attacker.Components[messageComponent].(*message)
 
 	defenderArmor := defender.Components[armorComponent].(*armor)
 	defenderHealth := defender.Components[healthComponent].(*health)
+	defenderMessage := defender.Components[messageComponent].(*message)
 	defenderName := defender.Components[nameComponent].(*name).Label
 
 	//Roll a d10 to hit
@@ -64,18 +62,24 @@ func attackSystem(g *game, attackerPosition *position, defenderPosition *positio
 			damageDone = 0
 		}
 		defenderHealth.CurrentHealth -= damageDone
-		fmt.Printf("%s swings %s at %s and hits for %d health.\n",
-			attackerName, attackerWeapon.Name, defenderName, damageDone)
+		fmt.Printf(
+			"%s swings %s at %s and hits for %d health.\n",
+			attackerName, attackerWeapon.Name, defenderName, damageDone,
+		)
+		attackerMessage.AttackMessage = fmt.Sprintf(
+			"%s swings %s at %s and hits for %d health.\n",
+			attackerName, attackerWeapon.Name, defenderName, damageDone,
+		)
 
 		if defenderHealth.CurrentHealth <= 0 {
-			fmt.Printf("%s has died!\n", defenderName)
+			defenderMessage.DeadMessage = fmt.Sprintf("%s has died!\n", defenderName)
 			if defenderName == "Player" {
-				fmt.Printf("Game Over!\n")
+				defenderMessage.GameStateMessage = "Game Over!\n"
 				g.Turn = gameOver
 			}
 			g.World.DisposeEntity(defender.Entity)
 		}
 	} else {
-		fmt.Printf("%s swings %s at %s and misses.\n", attackerName, attackerWeapon.Name, defenderName)
+		attackerMessage.AttackMessage = fmt.Sprintf("%s swings %s at %s and misses.\n", attackerName, attackerWeapon.Name, defenderName)
 	}
 }

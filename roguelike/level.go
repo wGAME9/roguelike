@@ -6,6 +6,10 @@ import (
 	"github.com/norendren/go-fov/fov"
 )
 
+var (
+	levelHeight = 0
+)
+
 type level struct {
 	Tiles         []*tile
 	Rooms         []rect
@@ -24,7 +28,7 @@ func newLevel() level {
 
 func (l *level) Draw(screen *ebiten.Image) {
 	for x := range numTilesX {
-		for y := range numTilesY {
+		for y := range levelHeight {
 			isVisible := l.PlayerVisible.IsVisible(x, y)
 			tileIdx := l.getIndexFromCoords(x, y)
 			tile := l.Tiles[tileIdx]
@@ -47,6 +51,8 @@ func (l *level) Draw(screen *ebiten.Image) {
 }
 
 func (l *level) GenerateLevelTiles() {
+	levelHeight = numTilesY - tileHeight
+
 	MIN_SIZE := 6
 	MAX_SIZE := 10
 	MAX_ROOMS := 30
@@ -59,7 +65,7 @@ func (l *level) GenerateLevelTiles() {
 		w := getRandomIntBetween(MIN_SIZE, MAX_SIZE)
 		h := getRandomIntBetween(MIN_SIZE, MAX_SIZE)
 		x := getDiceRoll(numTilesX - w - 1)
-		y := getDiceRoll(numTilesY - h - 1)
+		y := getDiceRoll(levelHeight - h - 1)
 
 		newRoom := newRectangle(x, y, w, h)
 		canAddThisRoom := true
@@ -94,12 +100,12 @@ func (l *level) GenerateLevelTiles() {
 }
 
 func (l *level) createTiles() {
-	tiles := make([]*tile, numTilesX*numTilesY)
+	tiles := make([]*tile, numTilesX*levelHeight)
 
 	for xIdx := range numTilesX {
-		for yIdx := range numTilesY {
-			placeIndx := l.getIndexFromCoords(xIdx, yIdx)
-			tiles[placeIndx] = &tile{
+		for yIdx := range levelHeight {
+			placeIdx := l.getIndexFromCoords(xIdx, yIdx)
+			tiles[placeIdx] = &tile{
 				X:          xIdx * tileWidth,
 				Y:          yIdx * tileHeight,
 				Blocked:    true,
@@ -129,7 +135,7 @@ func (l *level) createHorizontalTunnel(x1, x2, y int) {
 	maxX := max(x1, x2)
 	for x := minX; x < maxX+1; x++ {
 		index := l.getIndexFromCoords(x, y)
-		if index > 0 && index < numTilesX*numTilesY {
+		if index > 0 && index < numTilesX*levelHeight {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].TypeOfTile = FLOOR
 			l.Tiles[index].Image = floorImage
@@ -142,7 +148,7 @@ func (l *level) createVerticalTunnel(y1, y2, x int) {
 	maxY := max(y1, y2)
 	for y := minY; y < maxY+1; y++ {
 		index := l.getIndexFromCoords(x, y)
-		if index > 0 && index < numTilesX*numTilesY {
+		if index > 0 && index < numTilesX*levelHeight {
 			l.Tiles[index].Blocked = false
 			l.Tiles[index].TypeOfTile = FLOOR
 			l.Tiles[index].Image = floorImage
@@ -152,7 +158,7 @@ func (l *level) createVerticalTunnel(y1, y2, x int) {
 
 func (l level) InBounds(x, y int) bool {
 	xIsInBound := 0 < x && x < numTilesX
-	yIsInBound := 0 < y && y < numTilesY
+	yIsInBound := 0 < y && y < levelHeight
 
 	return xIsInBound && yIsInBound
 }
