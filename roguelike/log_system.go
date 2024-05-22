@@ -17,7 +17,7 @@ func processUserLog(g *game, screen *ebiten.Image) {
 	var fontY = uiLocation + 24
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(0.), float64(uiLocation))
-	screen.DrawImage(logImg, op)
+	screen.DrawImage(logImage, op)
 
 	tmpMessages := make([]string, 0, 5)
 	anyMessages := false

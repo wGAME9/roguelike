@@ -13,7 +13,8 @@ var (
 	playerImage *ebiten.Image
 	skellyImage *ebiten.Image
 	orcImage    *ebiten.Image
-	logImg      *ebiten.Image
+	logImage    *ebiten.Image
+	hudImage    *ebiten.Image
 )
 
 func init() {
@@ -43,7 +44,12 @@ func init() {
 		log.Fatal(err)
 	}
 
-	logImg, _, err = ebitenutil.NewImageFromFile("assets/UIPanel.png")
+	logImage, _, err = ebitenutil.NewImageFromFile("assets/UIPanel.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	hudImage, _, err = ebitenutil.NewImageFromFile("assets/UIPanel.png")
 	if err != nil {
 		log.Fatal(err)
 	}
