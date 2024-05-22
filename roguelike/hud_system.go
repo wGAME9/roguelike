@@ -16,7 +16,7 @@ func processHUD(g *game, screen *ebiten.Image) {
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(uiX), float64(uiY))
-	screen.DrawImage(logImage, op)
+	screen.DrawImage(hudImage, op)
 
 	for _, player := range g.World.Query(g.WorldTags[playersTag]) {
 		h := player.Components[healthComponent].(*health)
