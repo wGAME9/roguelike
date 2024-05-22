@@ -83,38 +83,72 @@ func initializeWorld(startingLevel level) (*ecs.Manager, map[string]ecs.Tag) {
 		if room.X1 != startingRoom.X1 {
 			mX, mY := room.Center()
 
-			manager.NewEntity().
-				AddComponent(monsterComponent, &monster{}).
-				AddComponent(renderableComponent, &renderable{
-					Image: skellyImage,
-				}).
-				AddComponent(positionComponent, &position{
-					X: mX,
-					Y: mY,
-				}).
-				AddComponent(healthComponent, &health{
-					MaxHealth:     10,
-					CurrentHealth: 10,
-				}).
-				AddComponent(meleeWeaponComponent, &meleeWeapon{
-					Name:          "Short Sword",
-					MinimumDamage: 2,
-					MaximumDamage: 6,
-					ToHitBonus:    0,
-				}).
-				AddComponent(armorComponent, &armor{
-					Name:       "Bone",
-					Defense:    3,
-					ArmorClass: 4,
-				}).
-				AddComponent(nameComponent, &name{
-					Label: "Skeleton",
-				}).
-				AddComponent(messageComponent, &message{
-					AttackMessage:    "",
-					DeadMessage:      "",
-					GameStateMessage: "",
-				})
+			//Flip a coin to see what to add...
+			mobSpawn := getDiceRoll(2)
+
+			if mobSpawn == 1 {
+				manager.NewEntity().
+					AddComponent(monsterComponent, &monster{}).
+					AddComponent(renderableComponent, &renderable{
+						Image: orcImage,
+					}).
+					AddComponent(positionComponent, &position{
+						X: mX,
+						Y: mY,
+					}).
+					AddComponent(healthComponent, &health{
+						MaxHealth:     30,
+						CurrentHealth: 30,
+					}).
+					AddComponent(meleeWeaponComponent, &meleeWeapon{
+						Name:          "Machete",
+						MinimumDamage: 4,
+						MaximumDamage: 8,
+						ToHitBonus:    1,
+					}).
+					AddComponent(armorComponent, &armor{
+						Name:       "Leather",
+						Defense:    5,
+						ArmorClass: 6,
+					}).
+					AddComponent(nameComponent, &name{Label: "Orc"}).
+					AddComponent(messageComponent, &message{
+						AttackMessage:    "",
+						DeadMessage:      "",
+						GameStateMessage: "",
+					})
+			} else {
+				manager.NewEntity().
+					AddComponent(monsterComponent, &monster{}).
+					AddComponent(renderableComponent, &renderable{
+						Image: skellyImage,
+					}).
+					AddComponent(positionComponent, &position{
+						X: mX,
+						Y: mY,
+					}).
+					AddComponent(healthComponent, &health{
+						MaxHealth:     10,
+						CurrentHealth: 10,
+					}).
+					AddComponent(meleeWeaponComponent, &meleeWeapon{
+						Name:          "Short Sword",
+						MinimumDamage: 2,
+						MaximumDamage: 6,
+						ToHitBonus:    0,
+					}).
+					AddComponent(armorComponent, &armor{
+						Name:       "Bone",
+						Defense:    3,
+						ArmorClass: 4,
+					}).
+					AddComponent(nameComponent, &name{Label: "Skeleton"}).
+					AddComponent(messageComponent, &message{
+						AttackMessage:    "",
+						DeadMessage:      "",
+						GameStateMessage: "",
+					})
+			}
 		}
 	}
 
